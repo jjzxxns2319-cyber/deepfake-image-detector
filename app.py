@@ -43,11 +43,15 @@ if uploaded_file is not None:
 
     st.subheader("예측 결과")
 
-    if prediction >= 0.5:
-        st.error("예측: 가짜")
-    else:
-        st.success("예측: 진짜")
+    real_probability = prediction
+fake_probability = 1 - prediction
 
-    st.write(f"가짜 확률: {prediction:.2f}")
+if real_probability >= 0.5:
+    st.success("예측: 진짜")
+else:
+    st.error("예측: 가짜")
+
+st.write(f"가짜 확률: {fake_probability:.2f}")
+st.write(f"진짜 확률: {real_probability:.2f}")
 else:
     st.info("이미지를 업로드하면 예측이 시작됩니다.")
