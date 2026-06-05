@@ -9,8 +9,19 @@ st.write("앱 시작됨")
 st.title("딥페이크 이미지 감지")
 st.write("얼굴 이미지를 업로드하고 진짜인지 가짜인지 확인하세요.")
 
+import gdown
+import os
+
 @st.cache_resource
 def load_cnn_model():
+
+    if not os.path.exists("cnn_model.h5"):
+        gdown.download(
+            "https://drive.google.com/uc?id=1OeIqW5Dqar2SNGktBWYerp_YSRt1p3LH",
+            "cnn_model.h5",
+            quiet=False
+        )
+
     return tf.keras.models.load_model("cnn_model.h5")
 
 model = load_cnn_model()
