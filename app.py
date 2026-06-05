@@ -35,31 +35,15 @@ if uploaded_file is not None:
     img_array = np.array(img)
     img_array = np.expand_dims(img_array, axis=0)
 
-    prediction = float(model.predict(img_array)[0][0])
+    fake_probability = float(model.predict(img_array)[0][0])
 
-    # 모델 출력값 해석 확인용
     st.subheader("예측 결과")
-    st.write(f"모델 원본 출력값: {prediction:.4f}")
+    st.write(f"예측 확률 (Fake): {fake_probability:.4f}")
 
-    # 현재 모델이 fake 확률을 출력한다고 가정
-    fake_probability = prediction
-    real_probability = 1 - prediction
-
-    # 너무 Real로만 나오는 문제를 완화하기 위해 threshold 조정
-    threshold = 0.20
-
-    if fake_probability >= threshold:
-        st.error("예측: 가짜")
+    if fake_probability >= 0.2:
+        st.error("예측: 가짜 (Fake)")
     else:
-        st.success("예측: 진짜")
-
-    st.write(f"가짜 확률: {fake_probability:.4f}")
-    st.write(f"진짜 확률: {real_probability:.4f}")
-    st.write(f"판정 기준값: {threshold}")
-
-    st.caption(
-        "※ 이 모델은 제한된 데이터로 학습되어 이미지 품질, 얼굴 크롭, 조명, 압축 정도에 따라 예측이 달라질 수 있습니다."
-    )
+        st.success("예측: 진짜 (Real)")
 
 else:
     st.info("이미지를 업로드하면 예측이 시작됩니다.")
