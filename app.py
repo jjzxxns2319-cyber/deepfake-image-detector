@@ -33,18 +33,21 @@ if uploaded_file is not None:
 
     img = image.resize((128, 128))
     img_array = np.array(img)
+
+    img_array = img_array / 255.0
+
     img_array = np.expand_dims(img_array, axis=0)
 
     prediction = model.predict(img_array)[0][0]
 
     st.subheader("예측 결과")
 
-    if prediction >= 0.5:
-        st.error("예측: 가짜")
-    else:
-        st.success("예측: 진짜")
+    st.write(f"예측 확률 (Fake): {prediction:.4f}")
 
-    st.write(f"가짜 확률: {prediction:.2f}")
+    if prediction >= 0.5:
+        st.error("예측: 가짜 (Fake)")
+    else:
+        st.success("예측: 진짜 (Real)")
 
 else:
     st.info("이미지를 업로드하면 예측이 시작됩니다.")
