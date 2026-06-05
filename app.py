@@ -2,26 +2,22 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import tensorflow as tf
+import gdown
+import os
 
 st.set_page_config(page_title="Deepfake Detection", page_icon="🧠")
-st.write("앱 시작됨")
 
 st.title("딥페이크 이미지 감지")
 st.write("얼굴 이미지를 업로드하고 진짜인지 가짜인지 확인하세요.")
 
-import gdown
-import os
-
 @st.cache_resource
 def load_cnn_model():
-
     if not os.path.exists("cnn_model.h5"):
         gdown.download(
             "https://drive.google.com/uc?id=1OeIqW5Dqar2SNGktBWYerp_YSRt1p3LH",
             "cnn_model.h5",
             quiet=False
         )
-
     return tf.keras.models.load_model("cnn_model.h5")
 
 model = load_cnn_model()
@@ -43,15 +39,12 @@ if uploaded_file is not None:
 
     st.subheader("예측 결과")
 
-    real_probability = prediction
-fake_probability = 1 - prediction
+    if prediction >= 0.5:
+        st.error("예측: 가짜")
+    else:
+        st.success("예측: 진짜")
 
-if real_probability >= 0.5:
-    st.success("예측: 진짜")
-else:
-    st.error("예측: 가짜")
+    st.write(f"가짜 확률: {prediction:.2f}")
 
-st.write(f"가짜 확률: {fake_probability:.2f}")
-st.write(f"진짜 확률: {real_probability:.2f}")
 else:
     st.info("이미지를 업로드하면 예측이 시작됩니다.")
